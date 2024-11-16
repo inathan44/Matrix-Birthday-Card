@@ -1,82 +1,109 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { addMessageSchema, AddMessageType } from '@/schemas/addMessageSchema';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import supabase from '@/supabaseConfig';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import Navbar from './Navbar';
+import { useToast } from '@/hooks/use-toast';
 
+document.title = 'Add a Message';
 export default function AddMessage() {
-  const [message, setMessage] = useState('');
-  const [name, setName] = useState('');
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // You can handle the form submission here
-    console.log('Message:', message);
-    console.log('Name:', name);
+  const form = useForm<AddMessageType>({
+    resolver: zodResolver(addMessageSchema),
+    defaultValues: {
+      message: '',
+      from: '',
+    },
+  });
 
-    setMessage('');
-    setName('');
-    alert(`Not set up yet. message: ${message} name: ${name}`);
-  };
+  async function onSubmit(data: AddMessageType) {
+    console.log(data);
+    const response = await supabase
+      .from('Messages')
+      .insert(data)
+      .select()
+      .single();
+    if (response.error) {
+      alert('An error occurred, please try again');
+    } else {
+      console.log('Message added successfully', response.data);
+      toast({
+        title: 'Message added successfully',
+        description: 'Your message has been added to the matrix',
+      });
+      form.reset({
+        message: '',
+        from: '',
+      });
+    }
+  }
 
   return (
-    <div className='bg-black text-green-500 h-screen flex flex-col justify-center items-center'>
-      <div className='flex gap-4'>
-        <Link to='/'>
-          <h1 className='text-2xl font-bold mb-4 bg-white text-black p-2 rounded-md'>
-            Homepage
-          </h1>
-        </Link>
-        <Link to='/donate'>
-          <h1 className='text-2xl font-bold mb-4 bg-white text-black p-2 rounded-md'>
-            Donate to David's Birthday Fund
-          </h1>
-        </Link>
+    <div className='bg-black text-green-500 h-screen flex flex-col justify-center items-center px-12 '>
+      <div className='max-w-2xl space-y-6'>
+        <h2>
+          This is a virtual birthday card for David. Write a message below.
+          Messages can be anonymous if you'd like. I have to manually add these
+          messages to the matrix so it may take time to see it on the homepage.
+          However you can preview your message
+        </h2>
+        <Navbar />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            <FormField
+              control={form.control}
+              name='message'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Message <span className='text-lg text-red-600'>*</span>{' '}
+                    <span className='invisible'>Required</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea placeholder='Add Message' {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    All messages are public and viewable by everyone.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='from'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>From</FormLabel>
+                  <FormControl>
+                    <Input placeholder='From' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type='submit'
+              className='ring-white bg-green-700 transition-colors hover:bg-green-800 active:bg-green-900'
+            >
+              Submit
+            </Button>
+          </form>
+        </Form>
       </div>
-      <h2>
-        This is a virtual birthday card for David. Write a message below.
-        Messages can be anonymous if you'd like. I have to manually add these
-        messages to the matrix so it may take time to see it on the homepage.
-        However you can preview your message
-      </h2>
-      <p className='underline text-white'>
-        All messages are public and viewable by everyone.
-      </p>
-      <form
-        className='flex flex-col w-full px-4 md:w-2/3'
-        onSubmit={handleSubmit}
-      >
-        <label className='mb-2' htmlFor='message'>
-          Message:
-        </label>
-        <textarea
-          className='mb-4 p-2 w-full text-black rounded-md'
-          id='message'
-          name='message'
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        ></textarea>
-        <label className='mb-2' htmlFor='name'>
-          Name (optional):
-        </label>
-        <input
-          className='mb-4 p-2 w-full rounded-md text-black'
-          id='name'
-          name='name'
-          type='text'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <div className='flex gap-4 justify-center'>
-          <button
-            type='submit'
-            className='bg-green-500 p-2 rounded-md text-black'
-          >
-            Submit Message
-          </button>
-          <button type='button' className='bg-white p-2 rounded-md text-black'>
-            Preview
-          </button>
-        </div>
-      </form>
     </div>
   );
 }

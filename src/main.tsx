@@ -5,6 +5,7 @@ import App from './App.tsx';
 import './index.css';
 import Donate from './components/Donate.tsx';
 import AddMessage from './components/AddMessage.tsx';
+import { Toaster } from './components/ui/toaster.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path='/donate' element={<Donate />} />
         <Route path='/addnote' element={<AddMessage />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   </StrictMode>
 );

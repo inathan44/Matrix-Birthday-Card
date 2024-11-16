@@ -29,7 +29,7 @@ export default function DonationPopUp() {
           rel='noopener noreferrer'
         >
           <span className='flex items-center gap-3'>
-            Donate via Venmo <ExternalLinkIcon />
+            Contribute to bday fund via venmo <ExternalLinkIcon />
           </span>
         </a>
       </div>

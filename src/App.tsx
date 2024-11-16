@@ -1,6 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import MatrixEffect from './components/MatrixEffect';
 import MatrixMessageEffect from './components/MatrixMessageEffect';
+import supabase from './supabaseConfig';
+import {
+  messagesResponse,
+  MessagesResponseType,
+} from './schemas/messagesResponse';
+import { z } from 'zod';
 
 export type Message = {
   message: string;
@@ -8,24 +14,72 @@ export type Message = {
 };
 
 const App: React.FC = () => {
-  const messages: Message[] = [
-    // { message: 'Welcome to the Matrix, Crit.', from: 'Yan' },
-    // { message: 'Follow the white rabbit.', from: 'Morpheus' },
-    {
-      message:
-        'Happy birthday crit, I hope you have a wonderful day! You are so amazing and I hope you.',
-      from: 'The Oracle',
-    },
-    { message: 'The choice is yours.', from: 'The Oracle' },
-    // { message: 'The choice is yours.', from: 'The Oracle' },
-    // { message: 'The choice is yours.', from: 'The Oracle' },
-    // { message: 'The choice is yours.', from: 'The Oracle' },
-    // { message: 'The choice is yours.', from: 'The Oracle' },
-  ];
+  // const messages: Message[] = [
+  //   // { message: 'Welcome to the Matrix, Crit.', from: 'Yan' },
+  //   // { message: 'Follow the white rabbit.', from: 'Morpheus' },
+  //   {
+  //     message:
+  //       'Happy birthday crit, I hope you have a wonderful day! You are so amazing and I hope you.',
+  //     from: 'The Oracle',
+  //   },
+  //   { message: 'The choice is yours.', from: 'The Oracle' },
+  //   // { message: 'The choice is yours.', from: 'The Oracle' },
+  //   // { message: 'The choice is yours.', from: 'The Oracle' },
+  //   // { message: 'The choice is yours.', from: 'The Oracle' },
+  //   // { message: 'The choice is yours.', from: 'The Oracle' },
+  // ];
 
   const appRef = useRef<HTMLDivElement>(null);
   const [showMessages, setShowMessages] = useState(false); // State to control message visibility
+  const [fetchedMessages, setFetchedMessages] = useState<
+    MessagesResponseType[]
+  >([]);
 
+  useEffect(() => {
+    async function fetchMessages() {
+      const response = await supabase.from('Messages').select('*');
+      if (response.error) {
+        console.error(
+          'An error occurred while fetching messages:',
+          response.error
+        );
+      } else {
+        const result = z.array(messagesResponse).safeParse(response.data);
+        if (result.success) {
+          const messages: MessagesResponseType[] = result.data;
+          setFetchedMessages(messages);
+        } else {
+          console.error('Validation failed:', result.error);
+        }
+      }
+    }
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
+    async function fetchMessages() {
+      // Fetch messages from the API
+      const response = await supabase.from('Messages').select('*');
+      if (response.error) {
+        console.error(
+          'An error occurred while fetching messages:',
+          response.error
+        );
+      } else {
+        const result = z.array(messagesResponse).safeParse(response.data);
+        if (result.success) {
+          const messages: MessagesResponseType[] = result.data;
+          // Do something with the messages
+          console.log('Parsed messages:', messages);
+        } else {
+          console.error('Validation failed:', result.error);
+        }
+      }
+    }
+    fetchMessages();
+  }, []);
+
+  document.title = 'Happy Birthday Crit!'; // Set the document title
   // Toggle Fullscreen mode on double click
   const handleDoubleClick = () => {
     if (!document.fullscreenElement) {
@@ -92,7 +146,7 @@ const App: React.FC = () => {
       )}
       {showMessages && (
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-[2px]'>
-          <MatrixMessageEffect messages={messages} />
+          <MatrixMessageEffect messages={fetchedMessages} />
         </div>
       )}
     </div>
