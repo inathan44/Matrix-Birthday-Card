@@ -17,8 +17,9 @@ import { useForm } from 'react-hook-form';
 import Navbar from './Navbar';
 import { useToast } from '@/hooks/use-toast';
 
-document.title = 'Add a Message';
 export default function AddMessage() {
+  document.title = 'Add a Message';
+
   const { toast } = useToast();
 
   const form = useForm<AddMessageType>({

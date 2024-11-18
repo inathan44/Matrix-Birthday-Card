@@ -14,21 +14,6 @@ export type Message = {
 };
 
 const App: React.FC = () => {
-  // const messages: Message[] = [
-  //   // { message: 'Welcome to the Matrix, Crit.', from: 'Yan' },
-  //   // { message: 'Follow the white rabbit.', from: 'Morpheus' },
-  //   {
-  //     message:
-  //       'Happy birthday crit, I hope you have a wonderful day! You are so amazing and I hope you.',
-  //     from: 'The Oracle',
-  //   },
-  //   { message: 'The choice is yours.', from: 'The Oracle' },
-  //   // { message: 'The choice is yours.', from: 'The Oracle' },
-  //   // { message: 'The choice is yours.', from: 'The Oracle' },
-  //   // { message: 'The choice is yours.', from: 'The Oracle' },
-  //   // { message: 'The choice is yours.', from: 'The Oracle' },
-  // ];
-
   const appRef = useRef<HTMLDivElement>(null);
   const [showMessages, setShowMessages] = useState(false); // State to control message visibility
   const [fetchedMessages, setFetchedMessages] = useState<
@@ -38,48 +23,28 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchMessages() {
       const response = await supabase.from('Messages').select('*');
+
       if (response.error) {
         console.error(
           'An error occurred while fetching messages:',
           response.error
         );
-      } else {
-        const result = z.array(messagesResponse).safeParse(response.data);
-        if (result.success) {
-          const messages: MessagesResponseType[] = result.data;
-          setFetchedMessages(messages);
-        } else {
-          console.error('Validation failed:', result.error);
-        }
+        return;
       }
+
+      const result = z.array(messagesResponse).safeParse(response.data);
+      if (result.error) {
+        console.error('Validation failed:', result.error);
+        return;
+      }
+
+      const messages: MessagesResponseType[] = result.data;
+      setFetchedMessages(messages);
     }
+
     fetchMessages();
   }, []);
 
-  useEffect(() => {
-    async function fetchMessages() {
-      // Fetch messages from the API
-      const response = await supabase.from('Messages').select('*');
-      if (response.error) {
-        console.error(
-          'An error occurred while fetching messages:',
-          response.error
-        );
-      } else {
-        const result = z.array(messagesResponse).safeParse(response.data);
-        if (result.success) {
-          const messages: MessagesResponseType[] = result.data;
-          // Do something with the messages
-          console.log('Parsed messages:', messages);
-        } else {
-          console.error('Validation failed:', result.error);
-        }
-      }
-    }
-    fetchMessages();
-  }, []);
-
-  document.title = 'Happy Birthday Crit!'; // Set the document title
   // Toggle Fullscreen mode on double click
   const handleDoubleClick = () => {
     if (!document.fullscreenElement) {
@@ -112,8 +77,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleRedPillClick = () => {
-    // Handle Red Pill click
-    setShowMessages(true); // Show messages after pill choice
+    setShowMessages(true);
   };
 
   return (

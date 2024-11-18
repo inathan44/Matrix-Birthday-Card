@@ -4,6 +4,8 @@ import Navbar from './Navbar';
 import { Button } from './ui/button';
 
 export default function Donate() {
+  document.title = "Donate to David's Birthday Gift Fund";
+
   const [showDonation, setShowDonation] = useState(false);
   const handleDonationClick = () => {
     setShowDonation(!showDonation);
