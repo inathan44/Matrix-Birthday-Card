@@ -3,6 +3,18 @@ import DonationPopUp from './DonationPopUp';
 import Navbar from './Navbar';
 import { Button } from './ui/button';
 
+interface Donation {
+  amount: number;
+  from: string;
+}
+
+const donations: Donation[] = [
+  { amount: 10, from: 'Ian' },
+  { amount: 10, from: 'Oscar' },
+  { amount: 5, from: 'Gabe' },
+  { amount: 5, from: 'Ev Mays' },
+];
+
 export default function Donate() {
   document.title = "Donate to David's Birthday Gift Fund";
 
@@ -12,7 +24,7 @@ export default function Donate() {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-black text-white p-4'>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-black text-white p-4'>
       <Navbar />
       <h1 className='text-3xl font-bold mb-4'>
         Donate to David's Birthday Fund
@@ -40,6 +52,14 @@ export default function Donate() {
           Contribute to bday fund via Venmo
         </Button>
       )}
+      <div className='mt-6'>
+        {donations.map((donation: Donation, index: number) => (
+          <div key={index} className='flex items-center gap-4'>
+            <span>${donation.amount}</span>
+            <span>from {donation.from}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

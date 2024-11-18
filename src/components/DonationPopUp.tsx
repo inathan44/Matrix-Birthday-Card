@@ -5,6 +5,7 @@ export default function DonationPopUp() {
 
   return (
     <>
+      <p className='mb-2'>@Ian-M-Nathan on venmo</p>
       <div className='flex items-center gap-4'>
         <div
           className='bg-white p-2 rounded-md'
@@ -18,7 +19,7 @@ export default function DonationPopUp() {
           <QRCode
             size={256}
             style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-            value={'https://google.com'}
+            value={'https://account.venmo.com/u/ian-m-nathan'}
             viewBox={`0 0 256 256`}
           />
         </div>

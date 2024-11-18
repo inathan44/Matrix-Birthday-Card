@@ -7,7 +7,7 @@ export default function Navbar() {
   const location = useLocation();
   const currentPath = location.pathname;
   return (
-    <div className='flex gap-4'>
+    <div className='sm:flex-row flex flex-col gap-4'>
       <Link
         to={'/'}
         className={cn(buttonVariants({ variant: 'secondary' }), {

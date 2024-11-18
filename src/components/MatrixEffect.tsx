@@ -51,16 +51,16 @@ const MatrixEffect: React.FC = () => {
 
     const interval = setInterval(draw, 50);
 
-    // Listen for window resizing to adjust the canvas size dynamically
-    window.addEventListener('resize', resizeCanvas);
-
     return () => {
       clearInterval(interval);
-      window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className='absolute top-0 left-0' />;
+  return (
+    <div className='bg-black'>
+      <canvas ref={canvasRef} className='absolute top-0 left-0' />
+    </div>
+  );
 };
 
 export default MatrixEffect;

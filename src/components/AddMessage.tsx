@@ -16,17 +16,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import Navbar from './Navbar';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddMessage() {
   document.title = 'Add a Message';
+
+  const navigate = useNavigate();
 
   const { toast } = useToast();
 
   const form = useForm<AddMessageType>({
     resolver: zodResolver(addMessageSchema),
     defaultValues: {
-      message: '',
-      from: '',
+      message:
+        JSON.parse(localStorage.getItem('previewMessage') || '{}').message ||
+        '',
+      from:
+        JSON.parse(localStorage.getItem('previewMessage') || '{}').from || '',
     },
   });
 
@@ -39,29 +45,39 @@ export default function AddMessage() {
       .single();
     if (response.error) {
       alert('An error occurred, please try again');
-    } else {
-      console.log('Message added successfully', response.data);
-      toast({
-        title: 'Message added successfully',
-        description: 'Your message has been added to the matrix',
-      });
-      form.reset({
-        message: '',
-        from: '',
-      });
+      return;
     }
+
+    toast({
+      title: 'Message added successfully',
+      description: 'Your message has been added to the matrix',
+    });
+    form.reset({
+      message: '',
+      from: '',
+    });
+    localStorage.removeItem('previewMessage');
+  }
+
+  function handlePreview() {
+    const values = form.getValues();
+    if (!values.message) {
+      alert('Please add a message before previewing');
+      return;
+    }
+    localStorage.setItem('previewMessage', JSON.stringify(values));
+    navigate('/addnote/preview');
   }
 
   return (
-    <div className='bg-black text-green-500 h-screen flex flex-col justify-center items-center px-12 '>
+    <div className='bg-black text-green-500 min-h-screen flex flex-col justify-center items-center px-12 '>
       <div className='max-w-2xl space-y-6'>
+        <Navbar />
         <h2>
           This is a virtual birthday card for David. Write a message below.
-          Messages can be anonymous if you'd like. I have to manually add these
-          messages to the matrix so it may take time to see it on the homepage.
-          However you can preview your message
+          Messages can be anonymous if you'd like, but they are public. you can
+          preview your message.
         </h2>
-        <Navbar />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
@@ -96,12 +112,21 @@ export default function AddMessage() {
                 </FormItem>
               )}
             />
-            <Button
-              type='submit'
-              className='ring-white bg-green-700 transition-colors hover:bg-green-800 active:bg-green-900'
-            >
-              Submit
-            </Button>
+            <div className='flex gap-3'>
+              <Button
+                type='submit'
+                className='ring-white bg-green-700 transition-colors hover:bg-green-800 active:bg-green-900'
+              >
+                Submit
+              </Button>
+              <Button
+                type='button'
+                className='ring-white bg-gray-500 transition-colors hover:bg-gray-800 active:bg-gray-900'
+                onClick={handlePreview}
+              >
+                Preview Message
+              </Button>
+            </div>
           </form>
         </Form>
       </div>

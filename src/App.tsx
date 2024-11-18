@@ -82,14 +82,14 @@ const App: React.FC = () => {
 
   return (
     <div
-      className='relative h-screen overflow-hidden'
+      className='relative min-h-screen'
       ref={appRef}
       onDoubleClick={handleDoubleClick}
     >
       <MatrixEffect />
       {!showMessages && (
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-[0px]'>
-          <div className='text-white text-2xl font-mono'>
+          <div className='text-white text-2xl font-mono flex flex-col items-center gap-4'>
             <h2 className='mb-4'>Choose your pill:</h2>
             <button
               className='bg-red-600 text-white py-2 px-4 rounded mr-4 transition hover:bg-red-500'
