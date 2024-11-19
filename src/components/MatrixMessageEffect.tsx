@@ -54,6 +54,8 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
               : message.message[position];
           position++;
         } else {
+          // set message to the full decoded message
+          setDisplayText(decodedText);
           clearInterval(decodeIntervalRef.current as NodeJS.Timeout);
           clearInterval(randomIntervalRef.current as NodeJS.Timeout);
           // Move to the next message after decoding ends
@@ -61,7 +63,7 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
             setCurrentMessage((prev) => (prev + 1) % messages.length);
             setDisplayText('');
             setDisplayName('');
-          }, 200); // Delay before the next message starts
+          }, 2000); // Delay before the next message starts
         }
       }, decodeSpeed);
     };
