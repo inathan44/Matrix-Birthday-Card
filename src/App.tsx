@@ -15,6 +15,8 @@ export type Message = {
 };
 
 const App: React.FC = () => {
+  document.title = 'Happy Birthday David!';
+
   const appRef = useRef<HTMLDivElement>(null);
   const [showMessages, setShowMessages] = useState(false); // State to control message visibility
   const [fetchedMessages, setFetchedMessages] = useState<
