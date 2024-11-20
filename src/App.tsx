@@ -46,18 +46,6 @@ const App: React.FC = () => {
     fetchMessages();
   }, []);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      window.dispatchEvent(new Event('resize'));
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
   const handleRedPillClick = () => {
     setShowMessages(true);
   };

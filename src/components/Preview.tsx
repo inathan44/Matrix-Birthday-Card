@@ -22,32 +22,9 @@ export default function Preview() {
     }
   }, []);
 
-  // Toggle Fullscreen mode on double click
-  const handleDoubleClick = () => {
-    if (!document.fullscreenElement) {
-      if (appRef.current) {
-        appRef.current.requestFullscreen().catch((err) => {
-          console.error(
-            `Error attempting to enable full-screen mode: ${err.message}`
-          );
-        });
-      }
-    } else {
-      document.exitFullscreen().catch((err) => {
-        console.error(
-          `Error attempting to exit full-screen mode: ${err.message}`
-        );
-      });
-    }
-  };
-
   return (
     <>
-      <div
-        className='relative h-screen overflow-hidden'
-        ref={appRef}
-        onDoubleClick={handleDoubleClick}
-      >
+      <div className='relative h-screen overflow-hidden' ref={appRef}>
         <MatrixEffect />
 
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-[2px] flex-col gap-4'>
