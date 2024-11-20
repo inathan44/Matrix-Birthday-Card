@@ -34,12 +34,6 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
     const generateRandomLetters = () => {
       randomIntervalRef.current = setInterval(() => {
         randomTextArray = randomTextArray.map((_char, index) => {
-          console.log(
-            'index',
-            index,
-            message.message[index],
-            message.message[index] === ' '
-          );
           if (index < position) {
             return message.message[index] === ' '
               ? ' '

@@ -13,7 +13,6 @@ export default function Preview() {
   const [previewMessage, setPreviewMessage] = useState<Message>({
     message: '',
   });
-  console.log(previewMessage);
 
   useEffect(() => {
     const message = localStorage.getItem('previewMessage');

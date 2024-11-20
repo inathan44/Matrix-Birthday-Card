@@ -37,7 +37,6 @@ export default function AddMessage() {
   });
 
   async function onSubmit(data: AddMessageType) {
-    console.log(data);
     const response = await supabase
       .from('Messages')
       .insert(data)
