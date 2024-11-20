@@ -116,15 +116,7 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
         Message {currentMessage + 1} of {messages.length}
       </span>
       <div className='flex justify-center overflow-x-hidden text-ellipsis'>
-        <div
-          style={{
-            wordWrap: 'break-word',
-            wordBreak: 'break-all',
-            whiteSpace: 'normal',
-          }}
-        >
-          {displayText}
-        </div>
+        <p className='whitespace-pre-wrap break-words'>{displayText}</p>
       </div>
       <span className='text-gray-500'>{displayName}</span>
       <div className='flex gap-3'>
