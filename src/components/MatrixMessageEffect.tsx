@@ -13,49 +13,57 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
   const [displayText, setDisplayText] = useState<string>('');
   const [displayName, setDisplayName] = useState<string>('');
   const [isPlaying, setIsPlaying] = useState(true); // State to control play/pause
-  const randomIntervalRef = useRef<
-    NodeJS.Timeout | number | undefined | string
-  >(undefined);
-  const decodeIntervalRef = useRef<
-    NodeJS.Timeout | number | undefined | string
-  >(undefined);
+  const randomIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const decodeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const totalDecodingTime = 2000; // Total time to decode the message in milliseconds
-  const randomLetterInterval = 80; // Interval for generating random letters in milliseconds
+  const randomLetterInterval = 100; // Interval for generating random letters in milliseconds
 
   useEffect(() => {
     const message = messages[currentMessage];
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Characters to use for random text
-    let decodedText = ''; // String to hold the decoded part of the message
-    let randomText = ''; // String to hold the random letters
+    let randomTextArray = message.message
+      .split('')
+      .map((char) =>
+        char === ' ' ? ' ' : letters[Math.floor(Math.random() * letters.length)]
+      ); // Initialize with random letters or spaces
 
-    const decodeSpeed = Math.min(
-      8000,
-      totalDecodingTime / message.message.length
-    ); // Calculate decoding speed
+    const decodeSpeed = totalDecodingTime / message.message.length; // Calculate decoding speed
     let position = 0;
 
     const generateRandomLetters = () => {
       randomIntervalRef.current = setInterval(() => {
-        randomText = Array(message.message.length - position)
-          .fill('')
-          .map(() => letters[Math.floor(Math.random() * letters.length)])
-          .join('');
-        setDisplayText(decodedText + randomText);
+        randomTextArray = randomTextArray.map((_char, index) => {
+          console.log(
+            'index',
+            index,
+            message.message[index],
+            message.message[index] === ' '
+          );
+          if (index < position) {
+            return message.message[index] === ' '
+              ? ' '
+              : message.message[index];
+          } else {
+            if (message.message[index] === ' ') {
+              return ' ';
+            }
+            return letters[Math.floor(Math.random() * letters.length)];
+          }
+        });
+        setDisplayText(randomTextArray.join(''));
       }, randomLetterInterval);
     };
 
     const decodeMessage = () => {
       decodeIntervalRef.current = setInterval(() => {
         if (position < message.message.length) {
-          decodedText +=
-            message.message[position] === ' '
-              ? '\u00A0'
-              : message.message[position];
+          randomTextArray[position] = message.message[position];
           position++;
+          setDisplayText(randomTextArray.join(''));
         } else {
           // set message to the full decoded message
-          setDisplayText(decodedText);
+          setDisplayText(message.message);
           clearInterval(decodeIntervalRef.current as NodeJS.Timeout);
           clearInterval(randomIntervalRef.current as NodeJS.Timeout);
           // Move to the next message after decoding ends
@@ -121,7 +129,9 @@ const MatrixMessageEffect: React.FC<MatrixMessageEffectProps> = ({
       <span className='text-gray-500'>{displayName}</span>
       <div className='flex gap-3'>
         <Button onClick={handlePrevious}>Previous</Button>
-        <Button onClick={handlePlayPause}>Play/Pause</Button>
+        <Button onClick={handlePlayPause}>
+          {isPlaying ? 'Pause' : 'Play'}
+        </Button>
         <Button onClick={handleNext}>Next</Button>
       </div>
     </div>
