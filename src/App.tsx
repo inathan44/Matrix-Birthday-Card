@@ -7,6 +7,7 @@ import {
   MessagesResponseType,
 } from './schemas/messagesResponse';
 import { z } from 'zod';
+import { cn } from './lib/utils';
 
 export type Message = {
   message: string;
@@ -45,25 +46,6 @@ const App: React.FC = () => {
     fetchMessages();
   }, []);
 
-  // Toggle Fullscreen mode on double click
-  const handleDoubleClick = () => {
-    if (!document.fullscreenElement) {
-      if (appRef.current) {
-        appRef.current.requestFullscreen().catch((err) => {
-          console.error(
-            `Error attempting to enable full-screen mode: ${err.message}`
-          );
-        });
-      }
-    } else {
-      document.exitFullscreen().catch((err) => {
-        console.error(
-          `Error attempting to exit full-screen mode: ${err.message}`
-        );
-      });
-    }
-  };
-
   useEffect(() => {
     const handleFullscreenChange = () => {
       window.dispatchEvent(new Event('resize'));
@@ -81,14 +63,15 @@ const App: React.FC = () => {
   };
 
   return (
-    <div
-      className='relative min-h-screen'
-      ref={appRef}
-      onDoubleClick={handleDoubleClick}
-    >
+    <div className='relative min-h-screen' ref={appRef}>
       <MatrixEffect />
       {!showMessages && (
-        <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-[0px]'>
+        <div
+          className={cn(
+            'absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-[0px]',
+            { 'backdrop-blur-[2px]': showMessages }
+          )}
+        >
           <div className='text-white text-2xl font-mono flex flex-col items-center gap-4'>
             <h2 className='mb-4'>Choose your pill:</h2>
             <button
@@ -109,7 +92,7 @@ const App: React.FC = () => {
         </div>
       )}
       {showMessages && (
-        <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-[2px]'>
+        <div className='absolute top-0 left-0 w-full h-full pt-24 pb-24 items-center justify-center bg-black bg-opacity-40 backdrop-blur-[2px] overflow-auto'>
           <MatrixMessageEffect messages={fetchedMessages} />
         </div>
       )}
