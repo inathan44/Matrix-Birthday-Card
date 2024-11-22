@@ -11,8 +11,9 @@ interface Donation {
 const donations: Donation[] = [
   { amount: 10, from: 'Ian' },
   { amount: 10, from: 'Oscar' },
-  { amount: 5, from: 'Gabe' },
-  { amount: 5, from: 'Ev Mays' },
+  { amount: 10, from: 'Gabe' },
+  { amount: 10, from: 'Ev Mays' },
+  { amount: 10, from: 'Ky G' },
 ];
 
 export default function Donate() {
