@@ -14,6 +14,7 @@ const donations: Donation[] = [
   { amount: 10, from: 'Gabe' },
   { amount: 10, from: 'Ev Mays' },
   { amount: 10, from: 'Ky G' },
+  { amount: 10, from: 'Julie' },
 ];
 
 export default function Donate() {
