@@ -25,7 +25,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     async function fetchMessages() {
-      const response = await supabase.from('Messages').select('*');
+      const response = await supabase
+        .from('Messages')
+        .select('*')
+        .order('created_at', { ascending: true });
 
       if (response.error) {
         console.error(
