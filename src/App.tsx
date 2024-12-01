@@ -1,13 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import MatrixEffect from './components/MatrixEffect';
 import MatrixMessageEffect from './components/MatrixMessageEffect';
-import supabase from './supabaseConfig';
-import {
-  messagesResponse,
-  MessagesResponseType,
-} from './schemas/messagesResponse';
-import { z } from 'zod';
+// import supabase from './supabaseConfig';
+// import {
+//   messagesResponse,
+//   MessagesResponseType,
+// } from './schemas/messagesResponse';
+// import { z } from 'zod';
 import { cn } from './lib/utils';
+import { hardCodedMessages } from '@/messages';
 
 export type Message = {
   message: string;
@@ -19,37 +20,36 @@ const App: React.FC = () => {
 
   const appRef = useRef<HTMLDivElement>(null);
   const [showMessages, setShowMessages] = useState(false); // State to control message visibility
-  const [fetchedMessages, setFetchedMessages] = useState<
-    MessagesResponseType[]
-  >([]);
+  // const [fetchedMessages, setFetchedMessages] =
+  //   useState<MessagesResponseType[]>(hardCodedMessages);
 
-  useEffect(() => {
-    async function fetchMessages() {
-      const response = await supabase
-        .from('Messages')
-        .select('*')
-        .order('created_at', { ascending: true });
+  // useEffect(() => {
+  //   async function fetchMessages() {
+  //     const response = await supabase
+  //       .from('Messages')
+  //       .select('*')
+  //       .order('created_at', { ascending: true });
 
-      if (response.error) {
-        console.error(
-          'An error occurred while fetching messages:',
-          response.error
-        );
-        return;
-      }
+  //     if (response.error) {
+  //       console.error(
+  //         'An error occurred while fetching messages:',
+  //         response.error
+  //       );
+  //       return;
+  //     }
 
-      const result = z.array(messagesResponse).safeParse(response.data);
-      if (result.error) {
-        console.error('Validation failed:', result.error);
-        return;
-      }
+  //     const result = z.array(messagesResponse).safeParse(response.data);
+  //     if (result.error) {
+  //       console.error('Validation failed:', result.error);
+  //       return;
+  //     }
 
-      const messages: MessagesResponseType[] = result.data;
-      setFetchedMessages(messages);
-    }
+  //     const messages: MessagesResponseType[] = result.data;
+  //     setFetchedMessages([...hardCodedMessages, ...messages]);
+  //   }
 
-    fetchMessages();
-  }, []);
+  //   fetchMessages();
+  // }, []);
 
   const handleRedPillClick = () => {
     setShowMessages(true);
@@ -86,7 +86,7 @@ const App: React.FC = () => {
       )}
       {showMessages && (
         <div className='absolute top-0 left-0 w-full h-full pt-24 pb-24 items-center justify-center bg-black bg-opacity-40 backdrop-blur-[2px] overflow-auto'>
-          <MatrixMessageEffect messages={fetchedMessages} />
+          <MatrixMessageEffect messages={hardCodedMessages} />
         </div>
       )}
     </div>
